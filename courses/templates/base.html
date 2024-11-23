@@ -11,7 +11,10 @@
       <a href="/" class="logo">Educa</a>
       <ul class="menu">
         {% if request.user.is_authenticated %}
-          <li><a href="{% url 'logout' %}">Sign out</a></li>
+          <form method="post" action="{% url 'logout' %}">
+               {% csrf_token %}
+               <button type="submit">logout</button>
+          </form>
         {% else %}
           <li><a href="{% url 'login' %}">Sign in</a></li>
         {% endif %}
@@ -21,6 +24,8 @@
       {% block content %}
       {% endblock %}
     </div>
+    {% block include_js %}
+    {% endblock %}
     <script>
       document.addEventListener('DOMContentLoaded', (event) => {
         // DOM loaded

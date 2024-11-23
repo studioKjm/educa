@@ -21,11 +21,16 @@ from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
+    # 로그인 페이지로 연결
     path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
+    # 로그아웃 페이지로 연결
     path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
+    # 관리자 페이지로 연결
     path('admin/', admin.site.urls),
+    # 강좌 관련 URL을 포함
     path('course/', include('courses.urls')),
 ]
 
+# 디버그 모드일 때 미디어 파일 제공
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -86,55 +86,61 @@ class ContentCreateUpdateView(TemplateResponseMixin, View):
     obj = None
     template_name = 'courses/manage/content/form.html'
 
+    # 모델 이름을 기반으로 모델을 반환하는 메서드
     def get_model(self, model_name):
         if model_name in ['text', 'video', 'image', 'file']:
-            return apps.get_model(app_label='courses',
-                                  model_name=model_name)
+            return apps.get_model(app_label='courses', model_name=model_name)
         return None
 
+    # 폼을 반환하는 메서드
     def get_form(self, model, *args, **kwargs):
-        Form = modelform_factory(model, exclude=['owner',
-                                                 'order',
-                                                 'created',
-                                                 'updated'])
+        Form = modelform_factory(model, exclude=['owner', 'order', 'created', 'updated'])
         return Form(*args, **kwargs)
 
+    # 요청을 디스패치하는 메서드
     def dispatch(self, request, module_id, model_name, id=None):
-        self.module = get_object_or_404(Module,
-                                       id=module_id,
-                                       course__owner=request.user)
+        self.module = get_object_or_404(Module, id=module_id, course__owner=request.user)
         self.model = self.get_model(model_name)
         if id:
-            self.obj = get_object_or_404(self.model,
-                                         id=id,
-                                         owner=request.user)
+            self.obj = get_object_or_404(self.model, id=id, owner=request.user)
         return super().dispatch(request, module_id, model_name, id)
 
+    # GET 요청을 처리하는 메서드
     def get(self, request, module_id, model_name, id=None):
         form = self.get_form(self.model, instance=self.obj)
-        return self.render_to_response({'form': form,
-                                        'object': self.obj})
+        return self.render_to_response({'form': form, 'object': self.obj})
 
+    # POST 요청을 처리하는 메서드
     def post(self, request, module_id, model_name, id=None):
-        form = self.get_form(self.model,
-                             instance=self.obj,
-                             data=request.POST,
-                             files=request.FILES)
+        form = self.get_form(self.model, instance=self.obj, data=request.POST, files=request.FILES)
         if form.is_valid():
             obj = form.save(commit=False)
             obj.owner = request.user
             obj.save()
             if not id:
-                # new content
-                Content.objects.create(module=self.module,
-                                       item=obj)
+                # 새로운 콘텐츠
+                Content.objects.create(module=self.module, item=obj)
             return redirect('module_content_list', self.module.id)
-        return self.render_to_response({'form': form,
-                                        'object': self.obj})
+        return self.render_to_response({'form': form, 'object': self.obj})
+
+# 콘텐츠를 삭제하는 뷰
+class ContentDeleteView(View):
+    def post(self, request, id):
+        content = get_object_or_404(Content, id=id, module__course__owner=request.user)
+        module = content.module
+        content.item.delete()
+        content.delete()
+        return redirect('module_content_list', module.id)
 
 
+class ModuleContentListView(TemplateResponseMixin, View):
+    template_name = 'courses/manage/module/content_list.html'
 
-
+    def get(self, request, module_id):
+        module = get_object_or_404(Module,
+                                   id=module_id,
+                                   course__owner=request.user)
+        return self.render_to_response({'module': module})
 
 
 

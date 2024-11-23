@@ -1,27 +1,30 @@
 {% extends "base.html" %}
 
-{% block title %}
-  {% if object %}
-    Edit content "{{ object.title }}"
-  {% else %}
-    Add new content
-  {% endif %}
-{% endblock %}
+{% block title %}Edit course{% endblock %}
 
 {% block content %}
-  <h1>
-    {% if object %}
-      Edit content "{{ object.title }}"
-    {% else %}
-      Add new content
-    {% endif %}
-  </h1>
-  <div class="module">
-    <h2>Course info</h2>
-    <form action="" method="post" enctype="multipart/form-data">
-      {{ form.as_p }}
-      {% csrf_token %}
-      <p><input type="submit" value="Save content"></p>
-    </form>
-  </div>
+  <h1>Edit course</h1>
+  <!-- 폼이 유효하지 않을 때 에러 메시지 표시 -->
+  {% if form.errors %}
+    <div class="error">
+      <p>Please correct the errors below:</p>
+      <ul>
+        <!-- 각 필드의 에러 메시지 반복 -->
+        {% for field in form %}
+          {% for error in field.errors %}
+            <li>{{ error }}</li>
+          {% endfor %}
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+  <!-- 강좌 수정 폼 시작 -->
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <!-- 폼 필드 반복 -->
+    {{ form.as_p }}
+    <!-- 제출 버튼 -->
+    <button type="submit">Save</button>
+  </form>
 {% endblock %}
