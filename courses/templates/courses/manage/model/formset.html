@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Edit "{{ course.title }}"
+{% endblock %}
+
+{% block content %}
+  <h1>Edit "{{ course.title }}"</h1>
+  <div class="module">
+    <h2>Course modules</h2>
+    <!-- 폼을 POST 메서드로 제출 -->
+    <form method="post">
+      <!-- 폼셋을 렌더링 -->
+      {{ formset }}
+      <!-- 폼셋 관리 폼을 렌더링 -->
+      {{ formset.management_form }}
+      <!-- CSRF 토큰을 추가 -->
+      {% csrf_token %}
+      <!-- 저장 버튼 -->
+      <input type="submit" value="Save modules">
+    </form>
+  </div>
+{% endblock %}
