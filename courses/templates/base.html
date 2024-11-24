@@ -3,32 +3,40 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <!-- 페이지 제목 블록 -->
     <title>{% block title %}Educa{% endblock %}</title>
+    <!-- CSS 파일 포함 -->
     <link href="{% static 'css/base.css' %}" rel="stylesheet">
   </head>
   <body>
     <div id="header">
+      <!-- 로고 링크 -->
       <a href="/" class="logo">Educa</a>
       <ul class="menu">
+        <!-- 사용자 인증 상태 확인 -->
         {% if request.user.is_authenticated %}
+          <!-- 로그아웃 폼 -->
           <form method="post" action="{% url 'logout' %}">
                {% csrf_token %}
                <button type="submit">logout</button>
           </form>
         {% else %}
+          <!-- 로그인 링크 -->
           <li><a href="{% url 'login' %}">Sign in</a></li>
         {% endif %}
       </ul>
     </div>
     <div id="content">
+      <!-- 콘텐츠 블록 -->
       {% block content %}
       {% endblock %}
     </div>
+    <!-- JavaScript 포함 블록 -->
     {% block include_js %}
     {% endblock %}
     <script>
       document.addEventListener('DOMContentLoaded', (event) => {
-        // DOM loaded
+        // DOM 로드 완료
         {% block domready %}
         {% endblock %}
       })

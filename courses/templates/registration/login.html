@@ -6,15 +6,21 @@
   <h1>Log-in</h1>
   <div class="module">
     {% if form.errors %}
+      <!-- 로그인 오류 메시지 표시 -->
       <p>Your username and password didn't match. Please try again.</p>
     {% else %}
-      <p>Please, use the following form to log-in:</p>
     {% endif %}
+      <p>Please, use the following form to log-in:</p>
     <div class="login-form">
+      <!-- 로그인 폼 시작 -->
       <form action="{% url 'login' %}" method="post">
+        <!-- 폼 필드 렌더링 -->
         {{ form.as_p }}
+        <!-- CSRF 토큰 추가 -->
         {% csrf_token %}
+        <!-- 다음 페이지로 리디렉션하기 위한 숨겨진 필드 -->
         <input type="hidden" name="next" value="{{ next }}" />
+        <!-- 로그인 버튼 -->
         <p><input type="submit" value="Log-in"></p>
       </form>
     </div>

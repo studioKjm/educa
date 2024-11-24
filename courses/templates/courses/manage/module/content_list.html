@@ -2,15 +2,18 @@
 {% load course %}
 
 {% block title %}
+  <!-- 모듈 제목 표시 -->
   Module {{ module.order|add:1 }}: {{ module.title }}
 {% endblock %}
 
 {% block content %}
 {% with course=module.course %}
+  <!-- 강좌 제목 표시 -->
   <h1>Course "{{ course.title }}"</h1>
   <div class="contents">
     <h3>Modules</h3>
     <ul id="modules">
+      <!-- 강좌의 각 모듈을 반복 -->
       {% for m in course.modules.all %}
         <li data-id="{{ m.id }}" {% if m == module %}class="selected"{% endif %}>
           <a href="{% url 'module_content_list' m.id %}">
@@ -22,53 +25,48 @@
           </a>
         </li>
       {% empty %}
+        <!-- 모듈이 없을 때 표시 -->
         <li>No modules yet.</li>
       {% endfor %}
     </ul>
-    <p><a href="{% url 'course_module_update' course.id %}">
-    Edit modules</a></p>
+    <p><a href="{% url 'course_module_update' course.id %}">Edit modules</a></p>
   </div>
   <div class="module">
+    <!-- 현재 모듈 제목 표시 -->
     <h2>Module {{ module.order|add:1 }}: {{ module.title }}</h2>
     <h3>Module contents:</h3>
     <div id="module-contents">
+      <!-- 모듈의 각 콘텐츠를 반복 -->
       {% for content in module.contents.all %}
         <div data-id="{{ content.id }}">
           {% with item=content.item %}
             <p>{{ item }} ({{ item|model_name }})</p>
-            <a href="{% url 'module_content_update' module.id item|model_name item.id %}">
-              Edit
-            </a>
+            <a href="{% url 'module_content_update' module.id item|model_name item.id %}">Edit</a>
             <form action="{% url 'module_content_delete' content.id %}" method="post">
               <input type="submit" value="Delete">
               {% csrf_token %}
             </form>
-            {% endwith %}
+          {% endwith %}
         </div>
       {% empty %}
+        <!-- 콘텐츠가 없을 때 표시 -->
         <p>This module has no contents yet.</p>
       {% endfor %}
     </div>
     <h3>Add new content:</h3>
     <ul class="content-types">
-      <li>
-        <a href="{% url 'module_content_create' module.id 'text' %}">Text</a>
-      </li>
-      <li>
-        <a href="{% url 'module_content_create' module.id 'image' %}">Image</a>
-      </li>
-      <li>
-        <a href="{% url 'module_content_create' module.id 'video' %}">Video</a>
-      </li>
-      <li>
-        <a href="{% url 'module_content_create' module.id 'file' %}">File</a>
-      </li>
+      <!-- 새로운 콘텐츠 추가 링크 -->
+      <li><a href="{% url 'module_content_create' module.id 'text' %}">Text</a></li>
+      <li><a href="{% url 'module_content_create' module.id 'image' %}">Image</a></li>
+      <li><a href="{% url 'module_content_create' module.id 'video' %}">Video</a></li>
+      <li><a href="{% url 'module_content_create' module.id 'file' %}">File</a></li>
     </ul>
   </div>
 {% endwith %}
 {% endblock %}
 
 {% block include_js %}
+  <!-- 외부 JavaScript 라이브러리 포함 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html5sortable/0.13.3/html5sortable.min.js"></script>
 {% endblock %}
 
@@ -80,6 +78,7 @@
 
   const moduleOrderUrl = '{% url "module_order" %}';
 
+  // 모듈 순서 변경 이벤트 처리
   sortable('#modules', {
     forcePlaceholderSize: true,
     placeholderClass: 'placeholder'
@@ -88,20 +87,21 @@
     modulesOrder = {};
     var modules = document.querySelectorAll('#modules li');
     modules.forEach(function (module, index) {
-      // update module index
+      // 모듈 인덱스 업데이트
       modulesOrder[module.dataset.id] = index;
-      // update index in HTML element
+      // HTML 요소의 인덱스 업데이트
       module.querySelector('.order').innerHTML = index + 1;
-      // add new order to the HTTP request options
+      // HTTP 요청 옵션에 새로운 순서 추가
       options['body'] = JSON.stringify(modulesOrder);
 
-      // send HTTP request
+      // HTTP 요청 전송
       fetch(moduleOrderUrl, options)
     });
   });
 
   const contentOrderUrl = '{% url "content_order" %}';
 
+  // 콘텐츠 순서 변경 이벤트 처리
   sortable('#module-contents', {
     forcePlaceholderSize: true,
     placeholderClass: 'placeholder'
@@ -110,12 +110,12 @@
     contentOrder = {};
     var contents = document.querySelectorAll('#module-contents div');
     contents.forEach(function (content, index) {
-      // update content index
+      // 콘텐츠 인덱스 업데이트
       contentOrder[content.dataset.id] = index;
-      // add new order to the HTTP request options
+      // HTTP 요청 옵션에 새로운 순서 추가
       options['body'] = JSON.stringify(contentOrder);
 
-      // send HTTP request
+      // HTTP 요청 전송
       fetch(contentOrderUrl, options)
     });
   });

@@ -79,7 +79,7 @@ class CourseModuleUpdateView(TemplateResponseMixin, View):
             return redirect('manage_course_list')
         return self.render_to_response({'course': self.course, 'formset': formset})
 
-
+# 콘텐츠를 생성하거나 업데이트하는 뷰
 class ContentCreateUpdateView(TemplateResponseMixin, View):
     module = None
     model = None
@@ -132,7 +132,7 @@ class ContentDeleteView(View):
         content.delete()
         return redirect('module_content_list', module.id)
 
-
+# 모듈 콘텐츠를 보여주는 뷰
 class ModuleContentListView(TemplateResponseMixin, View):
     template_name = 'courses/manage/module/content_list.html'
 
