@@ -23,4 +23,6 @@ urlpatterns = [
     # 강좌의 모듈 목록을 보여주는 뷰
     path('module/<int:module_id>/', views.ModuleContentListView.as_view(), name='module_content_list'),
 
+    path('module/order/', views.ModuleOrderView.as_view(), name='module_order'),
+
 ]

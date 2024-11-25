@@ -12,6 +12,8 @@ from django.forms.models import modelform_factory
 from django.apps import apps
 from .models import Module, Content
 
+from braces.views import CsrfExemptMixin, JsonRequestResponseMixin
+
 # 쿼리셋을 필터링하여 현재 로그인한 사용자의 소유인 객체만 반환하는 믹스인
 class OwnerMixin:
     def get_queryset(self):
@@ -136,12 +138,25 @@ class ContentDeleteView(View):
 class ModuleContentListView(TemplateResponseMixin, View):
     template_name = 'courses/manage/module/content_list.html'
 
+    # GET 요청을 처리하는 메서드
     def get(self, request, module_id):
         module = get_object_or_404(Module,
                                    id=module_id,
                                    course__owner=request.user)
         return self.render_to_response({'module': module})
 
+# 모듈 순서를 업데이트하는 뷰
+class ModuleOrderView(CsrfExemptMixin, JsonRequestResponseMixin, View):
+    # POST 요청을 처리하는 메서드
+    def post(self, request):
+        for id, order in self.request_json.items():
+            Module.objects.filter(id=id, course__owner=request.user).update(order=order)
+        return self.render_json_response({'saved': 'OK'})
 
-
-
+# 콘텐츠 순서를 업데이트하는 뷰
+class ContentOrderView(CsrfExemptMixin, JsonRequestResponseMixin, View):
+    # POST 요청을 처리하는 메서드
+    def post(self, request):
+        for id, order in self.request_json.items():
+            Content.objects.filter(id=id, module__course__owner=request.user).update(order=order)
+        return self.render_json_response({'saved': 'OK'})
