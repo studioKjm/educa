@@ -5,24 +5,23 @@
 {% block content %}
   <h1>My courses</h1>
   <div class="module">
-    <!-- 강좌 목록을 반복 -->
     {% for course in object_list %}
       <div class="course-info">
-        <!-- 강좌 제목 표시 -->
         <h3>{{ course.title }}</h3>
         <p>
-          <!-- 강좌 수정 링크 -->
           <a href="{% url 'course_edit' course.id %}">Edit</a>
-          <!-- 강좌 삭제 링크 -->
           <a href="{% url 'course_delete' course.id %}">Delete</a>
+          <a href="{% url 'course_module_update' course.id %}">Edit modules</a>
+          {% if course.modules.count > 0 %}
+            <a href="{% url 'module_content_list' course.modules.first.id %}">
+            Manage contents</a>
+          {% endif %}
         </p>
       </div>
-    <!-- 강좌가 없을 때 표시 -->
     {% empty %}
       <p>You haven't created any courses yet.</p>
     {% endfor %}
     <p>
-      <!-- 새로운 강좌 생성 버튼 -->
       <a href="{% url 'course_create' %}" class="button">Create new course</a>
     </p>
   </div>
