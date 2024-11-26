@@ -22,7 +22,9 @@ urlpatterns = [
     path('content/<int:id>/delete/', views.ContentDeleteView.as_view(), name='module_content_delete'),
     # 강좌의 모듈 목록을 보여주는 뷰
     path('module/<int:module_id>/', views.ModuleContentListView.as_view(), name='module_content_list'),
-
+    # 강좌를 구매하는 뷰
     path('module/order/', views.ModuleOrderView.as_view(), name='module_order'),
+    # 콘텐츠를 구매하는 뷰
+    path('content/order/', views.ContentOrderView.as_view(), name='content_order'),
 
 ]
