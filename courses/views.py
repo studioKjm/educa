@@ -14,6 +14,12 @@ from .models import Module, Content
 
 from braces.views import CsrfExemptMixin, JsonRequestResponseMixin
 
+from django.db.models import Count
+from .models import Subject
+
+from django.views.generic.detail import DetailView
+
+
 # 쿼리셋을 필터링하여 현재 로그인한 사용자의 소유인 객체만 반환하는 믹스인
 class OwnerMixin:
     def get_queryset(self):
@@ -160,3 +166,24 @@ class ContentOrderView(CsrfExemptMixin, JsonRequestResponseMixin, View):
         for id, order in self.request_json.items():
             Content.objects.filter(id=id, module__course__owner=request.user).update(order=order)
         return self.render_json_response({'saved': 'OK'})
+
+
+
+# 강좌 목록을 보여주는 뷰
+class CourseListView(TemplateResponseMixin, View):
+    model = Course
+    template_name = 'courses/course/list.html'
+    # GET 요청을 처리하는 메서드
+    def get(self, request, subject=None):
+        subjects = Subject.objects.annotate(total_courses=Count('courses'))
+        courses = Course.objects.annotate(total_modules=Count('modules'))
+        if subject:
+            subject = get_object_or_404(Subject, slug=subject)
+            courses = courses.filter(subject=subject)
+        return self.render_to_response({'subjects': subjects, 'subject': subject, 'courses': courses})
+
+# 강좌 상세를 보여주는 뷰
+class CourseDetailView(DetailView):
+    model = Course
+    template_name = 'courses/course/detail.html'
+
