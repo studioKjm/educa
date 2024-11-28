@@ -26,5 +26,9 @@ urlpatterns = [
     path('module/order/', views.ModuleOrderView.as_view(), name='module_order'),
     # 콘텐츠를 구매하는 뷰
     path('content/order/', views.ContentOrderView.as_view(), name='content_order'),
+    # 강좌 목록을 보여주는 뷰
+    path('subject/<slug:subject>/', views.CourseListView.as_view(), name='course_list_subject'),
+    # 강좌 디테일 뷰
+    path('<slug:slug>/', views.CourseDetailView.as_view(), name='course_detail'),
 
 ]
