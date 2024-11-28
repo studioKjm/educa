@@ -33,6 +33,8 @@ urlpatterns = [
     path('course/', include('courses.urls')),
     # 강좌 목록을 보여주는 뷰
     path('',CourseListView.as_view(),name='course_list'),
+    # 학생 관련 URL을 포함
+    path('students/', include('students.urls')),
 ]
 
 # 디버그 모드일 때 미디어 파일 제공
