@@ -33,6 +33,8 @@ class Course(models.Model):
     overview = models.TextField()
     # 생성 날짜 필드
     created = models.DateTimeField(auto_now_add=True)
+    # 학생 필드 (User 모델과 다대다 관계)
+    students = models.ManyToManyField(User, related_name='courses_joined', blank=True)
 
     class Meta:
         # 생성 날짜를 기준으로 내림차순 정렬
