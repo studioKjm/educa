@@ -19,6 +19,7 @@ from .models import Subject
 
 from django.views.generic.detail import DetailView
 
+from students.forms import CourseEnrollForm
 
 # 쿼리셋을 필터링하여 현재 로그인한 사용자의 소유인 객체만 반환하는 믹스인
 class OwnerMixin:
