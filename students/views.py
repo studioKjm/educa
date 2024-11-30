@@ -11,6 +11,8 @@ from django.views.generic.list import ListView
 from courses.models import Course
 from django.views.generic.detail import DetailView
 
+
+
 class StudentRegistrationView(CreateView):
     template_name = 'students/student/registration.html'
     form_class = UserCreationForm
@@ -55,3 +57,4 @@ class studentCourseDetailView(DetailView):
         else:
             context['module'] = course.modules.all()[0]
         return context
+
