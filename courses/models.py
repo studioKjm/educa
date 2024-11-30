@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from .fields import OrderField
+from django.template.loader import render_to_string
 
 # Subject 모델 정의
 class Subject(models.Model):
@@ -99,6 +100,10 @@ class ItemBase(models.Model):
     def __str__(self):
         # 객체를 문자열로 표현
         return self.title
+
+    def render(self):
+        # 템플릿을 렌더링
+        return render_to_string(f'courses/content/{self._meta.model_name}.html', {'item': self})
 
 # Text 모델 정의 (ItemBase 상속)
 class Text(ItemBase):
