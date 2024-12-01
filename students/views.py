@@ -36,14 +36,14 @@ class StudentEnrollCourseView(LoginRequiredMixin, FormView):
     def get_success_url(self):
         return reverse_lazy('student_course_detail', args=[self.course.id])
 
-class studentCourseListView(LoginRequiredMixin, ListView):
+class StudentCourseListView(LoginRequiredMixin, ListView):
     model = Course
     template_name = 'students/course/list.html'
     def get_queryset(self):
         qs = super().get_queryset()
         return qs.filter(students__in=[self.request.user])
 
-class studentCourseDetailView(DetailView):
+class StudentCourseDetailView(DetailView):
     model = Course
     template_name = 'students/course/detail.html'
     def get_queryset(self):

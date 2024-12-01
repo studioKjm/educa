@@ -176,17 +176,30 @@ class ContentOrderView(CsrfExemptMixin, JsonRequestResponseMixin, View):
 class CourseListView(TemplateResponseMixin, View):
     model = Course
     template_name = 'courses/course/list.html'
-    # GET 요청을 처리하는 메서드
+
     def get(self, request, subject=None):
         subjects = cache.get('all_subjects')
         if not subjects:
-            subjects = Subject.objects.annotate(total_courses=Count('courses'))
+            subjects = Subject.objects.annotate(
+                total_courses=Count('courses'))
             cache.set('all_subjects', subjects)
-        courses = Course.objects.annotate(total_modules=Count('modules'))
+        all_courses = Course.objects.annotate(
+            total_modules=Count('modules'))
         if subject:
             subject = get_object_or_404(Subject, slug=subject)
-            courses = courses.filter(subject=subject)
-        return self.render_to_response({'subjects': subjects, 'subject': subject, 'courses': courses})
+            key = f'subject_{subject.id}_courses'
+            courses = cache.get(key)
+            if not courses:
+                courses = all_courses.filter(subject=subject)
+                cache.set(key, courses)
+        else:
+            courses = cache.get('all_courses')
+            if not courses:
+                courses = all_courses
+                cache.set('all_courses', courses)
+        return self.render_to_response({'subjects': subjects,
+                                        'subject': subject,
+                                        'courses': courses})
 
 # 강좌 상세를 보여주는 뷰
 class CourseDetailView(DetailView):
