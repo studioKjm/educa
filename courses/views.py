@@ -21,6 +21,8 @@ from django.views.generic.detail import DetailView
 
 from students.forms import CourseEnrollForm
 
+from django.core.cache import cache
+
 # 쿼리셋을 필터링하여 현재 로그인한 사용자의 소유인 객체만 반환하는 믹스인
 class OwnerMixin:
     def get_queryset(self):
@@ -176,7 +178,10 @@ class CourseListView(TemplateResponseMixin, View):
     template_name = 'courses/course/list.html'
     # GET 요청을 처리하는 메서드
     def get(self, request, subject=None):
-        subjects = Subject.objects.annotate(total_courses=Count('courses'))
+        subjects = cache.get('all_subjects')
+        if not subjects:
+            subjects = Subject.objects.annotate(total_courses=Count('courses'))
+            cache.set('all_subjects', subjects)
         courses = Course.objects.annotate(total_modules=Count('modules'))
         if subject:
             subject = get_object_or_404(Subject, slug=subject)
