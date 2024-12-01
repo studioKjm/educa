@@ -22,6 +22,7 @@ from django.contrib.auth import views as auth_views
 
 from courses.views import CourseListView
 
+
 urlpatterns = [
     # 로그인 페이지로 연결
     path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
@@ -35,6 +36,8 @@ urlpatterns = [
     path('',CourseListView.as_view(),name='course_list'),
     # 학생 관련 URL을 포함
     path('students/', include('students.urls')),
+    # 디버그 툴바 URL을 포함
+    path('__debug__/', include('debug_toolbar.urls')),
 ]
 
 # 디버그 모드일 때 미디어 파일 제공
