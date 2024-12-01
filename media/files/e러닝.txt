@@ -1,0 +1,52 @@
+cd C:\projects\educa
+
+c:\venvs\educa\Scripts\activate
+
+python manage.py runserver
+
+pip install django-braces
+
+
+
+http://localhost:8000/course/mine/
+
+http://localhost:8000/accounts/login/?next=/course/mine
+
+http://localhost:8000/course/module/6/content/image/create
+
+python manage.py shell
+from django.contrib.auth.models import User
+from courses.models import Subject, Course, Module
+user = User.objects.last()
+subject = Subject.objects.last()
+c1 = Course.objects.create(subject=subject, owner=user, title='Course 1', slug='course1')
+m1 = Module.objects.create(course=c1, title='Module 1')
+m1.order
+
+m2 = Module.objects.create(course=c1, title='Module 2')
+m2.order
+
+m3 = Module.objects.create(course=c1, title='Module 3', order=5)
+m3.order
+
+m4 = Module.objects.create(course=c1, title='Module 4')
+m4.order
+
+c2 = Course.objects.create(subject=subject, title='Course 2', slug='course2', owner=user )
+m5 = Module.objects.create(course=c2, title='Module 1')
+m5.order
+
+
+관리자
+admin
+wl6260als@@
+
+강사
+jimin
+test4321
+
+학생
+student
+test4321
+
+
