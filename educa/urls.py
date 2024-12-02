@@ -38,6 +38,8 @@ urlpatterns = [
     path('students/', include('students.urls')),
     # 디버그 툴바 URL을 포함
     path('__debug__/', include('debug_toolbar.urls')),
+    # API URL을 포함
+    path('api/', include('courses.api.urls', namespace='api')),
 ]
 
 # 디버그 모드일 때 미디어 파일 제공
