@@ -23,3 +23,9 @@ class CourseEnrollView(APIView):
         course = get_object_or_404(Course, id=pk)
         course.students.add(request.user)
         return Response({'enrolled': True})
+
+
+
+
+
+
