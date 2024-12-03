@@ -144,7 +144,7 @@ LOGIN_REDIRECT_URL = reverse_lazy('student_course_list')
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': '127.0.0.1:6379',
+        'LOCATION': 'redis://127.0.0.1:6379',
     }
 }
 

@@ -4,7 +4,8 @@ from rest_framework.response import Response
 
 from rest_framework import generics
 from courses.models import Subject, Course
-from courses.api.serializers import SubjectSerializer
+from rest_framework import viewsets
+from courses.api.serializers import SubjectSerializer, CourseSerializer
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 
@@ -23,6 +24,10 @@ class CourseEnrollView(APIView):
         course = get_object_or_404(Course, id=pk)
         course.students.add(request.user)
         return Response({'enrolled': True})
+
+class CourseViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
 
 
 
